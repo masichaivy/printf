@@ -28,6 +28,9 @@ int _printf(const char *format, ...)
 			format++;
 		}
 
+		if (format == '\0')
+			break;
+
 		if (*format == 'c')
 		{
 			write(1, format, 1);
