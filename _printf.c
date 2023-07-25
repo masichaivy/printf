@@ -8,32 +8,52 @@
 int _printf(const char *format, ...)
 {
 	int char_count;
+	va_list args_list;
 
 	char_count = 0;
 	if (format == NULL)
 		return (-1);
 
-	va_list args_list;
-
 	va_start(args_list, format);
 
-	while(*format)
+	while (*format)
 	{
-		if(*format != '%')
+		if (*format != '%')
 		{
 			write(1, format, 1);
 			char_count++;
 		}
-		else {
-			format++;
-		}
-
-		if (format == '\0')
-			break;
-
-		if (*format == 'c')
+		else
 		{
-			write(1, format, 1);
+			format++;
+
+			if (*format == '\0')
+				break;
+
+			if (*format == '%')
+			{
+				write(1, format, 1);
+				char_count++;
+			}
+			else if (*format == 'c')
+			{
+				char input = va_arg(args_list, int);
+
+				write(1, &input, 1);
+				char_count++;
+			}
+			else if (*format == 's')
+			{
+				char *str = va_arg(args_list, char*);
+				int len = strlen(str);
+
+				write(1, str, len);
+				char_count += len;
+			}
 		}
+		format++;
 	}
+	va_end(args_list);
+
+	return (char_count);
 }
